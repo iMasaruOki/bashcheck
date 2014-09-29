@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/sh
 
 r=`x="() { :; }; echo x" bash -c ""`
 if [ -n "$r" ]; then
@@ -15,14 +15,16 @@ else
 	echo -e "\033[92mNot vulnerable to CVE-2014-7169 (taviso bug)\033[39m"
 fi
 
-bash -c "true $(printf '<<EOF %.0s' {1..79})" 2>/dev/null
+SEQ=`seq 1 79`
+bash -c "true $(printf '<<EOF %.0s' $SEQ)" 2>/dev/null
 if [ $? != 0 ]; then
 	echo -e "\033[91mVulnerable to CVE-2014-7186 (redir_stack bug)\033[39m"
 else
 	echo -e "\033[92mNot vulnerable to CVE-2014-7186 (redir_stack bug)\033[39m"
 fi
 
-bash -c "`for i in {1..200}; do echo -n "for x$i in; do :;"; done; for i in {1..200}; do echo -n "done;";done`" 2>/dev/null
+SEQ=`seq 1 200`
+bash -c "`for i in $SEQ; do echo -n "for x$i in; do :;"; done; for i in $SEQ; do echo -n "done;";done`" 2>/dev/null
 if [ $? != 0 ]; then
 	echo -e "\033[91mVulnerable to CVE-2014-7187 (nessted loops off by one)\033[39m"
 else
